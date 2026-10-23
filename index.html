@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MTAuto — автосервис в Москве</title>
+<meta name="description" content="MTAuto: ТО, диагностика, шиномонтаж, замена масла, ремонт двигателя и коробки передач в Москве. Запись онлайн.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  /* ЦВЕТА: все в одном месте, меняешь здесь — меняется везде */
+  :root {
+    --bg: #1f2124;        /* графит */
+    --panel: #292c30;     /* чуть светлее графита */
+    --line: #3a3e43;      /* тонкие линии */
+    --text: #eceae6;      /* основной текст */
+    --muted: #a3a7ad;     /* второстепенный текст */
+    --accent: #ff6a1a;    /* сигнальный оранжевый */
+    --accent-text: #1a1208;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: Onest, system-ui, sans-serif; line-height: 1.6; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+  h1, h2, .logo { font-family: Unbounded, Onest, sans-serif; line-height: 1.15; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+  /* Шапка */
+  header { border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; gap: 16px; }
+  .logo { font-weight: 700; font-size: 20px; text-decoration: none; }
+  .logo span { color: var(--accent); }
+  .phone { color: var(--muted); text-decoration: none; font-size: 15px; }
+  .btn { display: inline-block; background: var(--accent); color: var(--accent-text); font-weight: 600;
+         padding: 12px 22px; border-radius: 8px; text-decoration: none; transition: transform .15s; }
+  .btn:hover { transform: translateY(-2px); }
+
+  /* Главный экран */
+  .hero { padding-block: 72px 56px; display: grid; gap: 40px; grid-template-columns: 1.2fr 1fr; align-items: center; }
+  .hero h1 { font-size: clamp(28px, 5vw, 46px); font-weight: 700; }
+  .hero p { color: var(--muted); font-size: 18px; margin: 20px 0 28px; max-width: 46ch; }
+
+  /* Карточка в виде наряд-заказа */
+  .order { background: var(--panel); border: 1px dashed var(--accent); border-radius: 10px; padding: 22px; font-size: 15px; }
+  .order b { font-family: Unbounded, sans-serif; font-weight: 500; display: block; margin-bottom: 12px; }
+  .order div { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--line); }
+  .order em { font-style: normal; color: var(--accent); }
+
+  /* Прайс */
+  section { padding: 56px 0; }
+  h2 { font-size: clamp(22px, 3.5vw, 30px); font-weight: 700; margin-bottom: 8px; }
+  .sub { color: var(--muted); margin-bottom: 28px; }
+  .price-list { border-top: 1px solid var(--line); }
+  .row { display: grid; grid-template-columns: 1fr auto; gap: 4px 24px; padding: 20px 0; border-bottom: 1px solid var(--line); }
+  .row h3 { font-size: 18px; font-weight: 600; }
+  .row p { color: var(--muted); font-size: 15px; grid-column: 1; }
+  .row .price { grid-row: 1 / span 2; grid-column: 2; align-self: center; font-family: Unbounded, sans-serif; font-weight: 500; white-space: nowrap; }
+  .note { color: var(--muted); font-size: 13px; margin-top: 16px; }
+
+  /* Заглушка для формы записи (сделаем на следующем шаге) */
+  #zapis .box { background: var(--panel); border-radius: 10px; padding: 32px; border: 1px solid var(--line); }
+  /* Почему мы, отзывы, контакты */
+  .why { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 40px; }
+  .why > div { border-left: 3px solid var(--accent); padding-left: 18px; }
+  .why h3 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  .why p { color: var(--muted); font-size: 15px; }
+  .reviews { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .review { background: var(--panel); border-radius: 10px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; gap: 16px; }
+  .review blockquote { font-size: 15px; }
+  .review figcaption { color: var(--muted); font-size: 14px; }
+  .contacts { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 24px; }
+  .info p { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .info span { display: block; color: var(--muted); font-size: 14px; }
+  .mapbox { background: var(--panel); border: 1px dashed var(--line); border-radius: 10px; min-height: 200px; padding: 20px;
+            display: grid; place-content: center; justify-items: center; gap: 16px; text-align: center; color: var(--muted); }
+
+  /* Форма записи */
+  label { display: grid; gap: 6px; font-size: 14px; color: var(--muted); }
+  input, select { background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 8px;
+                  padding: 12px; font: inherit; font-size: 16px; width: 100%; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  fieldset { border: 0; padding: 0; margin: 20px 0; }
+  legend { font-size: 14px; color: var(--muted); margin-bottom: 8px; padding: 0; }
+  .slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; }
+  .slots label { position: relative; }
+  .slots input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .slots span { display: block; text-align: center; padding: 10px 0; border: 1px solid var(--line); border-radius: 8px;
+                color: var(--text); font-size: 15px; cursor: pointer; }
+  .slots input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
+  .slots input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .slots input:disabled + span { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
+  .check { grid-template-columns: auto 1fr; align-items: start; gap: 10px; color: var(--text); font-size: 14px; }
+  .check input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); }
+  .error { color: #ff8a65; min-height: 1.5em; margin: 12px 0; font-size: 15px; }
+  button.btn { border: 0; font: inherit; font-weight: 600; cursor: pointer; }
+  #done h3 { font-family: Unbounded, sans-serif; font-weight: 500; margin-bottom: 16px; }
+  #done dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 20px; margin-bottom: 20px; }
+  #done dt { color: var(--muted); }
+  #done dd { margin: 0; }
+  #zapis .box > .note { margin-top: 20px; }
+  #zapis .btn { white-space: nowrap; }
+  footer { border-top: 1px solid var(--line); padding: 28px 0; color: var(--muted); font-size: 14px; }
+
+  /* Телефоны: одна колонка */
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; padding-top: 40px; }
+    .phone { display: none; }
+    .grid2 { grid-template-columns: 1fr; }
+    .why, .reviews, .contacts { grid-template-columns: 1fr; }
+    #zapis .box { padding: 24px 20px; }
+    #zapis .btn { font-size: 15px; padding: 12px 16px; }
+    .row { grid-template-columns: 1fr; }
+    .row .price { grid-row: auto; grid-column: 1; margin-top: 6px; color: var(--accent); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#">MT<span>Auto</span></a>
+    <a class="phone" href="tel:+74950000000">+7 (495) 000-00-00</a>
+    <a class="btn" href="#zapis">Записаться</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <h1>Разберемся, что с вашей машиной</h1>
+      <p>Диагностика показывает основную причину. Если при разборе найдем что-то еще, позвоним и покажем.</p>
+      <a class="btn" href="#zapis">Записаться на диагностику</a>
+    </div>
+    <div class="order" aria-hidden="true">
+      <b>Заказ-наряд № 0001</b>
+      <div><span>Компьютерная диагностика</span><em>выполнено</em></div>
+      <div><span>При разборе нашли ещё</span><em>звоним владельцу</em></div>
+      <div><span>Доп. работы</span><em>только после «ок»</em></div>
+    </div>
+  </div>
+
+  <section id="uslugi">
+    <div class="wrap">
+      <h2>Услуги и цены</h2>
+      <p class="sub">Цены «от»: итог зависит от состояния машины. Если при работе вскроется что-то еще, сообщим сразу.</p>
+      <div class="price-list">
+        <div class="row"><h3>Плановое ТО</h3><p>Масло, фильтры, проверка узлов по регламенту производителя.</p><span class="price">от 4 500 ₽</span></div>
+        <div class="row"><h3>Компьютерная диагностика</h3><p>Считываем ошибки, проверяем датчики, объясняем результат простыми словами.</p><span class="price">от 1 500 ₽</span></div>
+        <div class="row"><h3>Шиномонтаж</h3><p>Снять, сбалансировать, поставить. Цена за комплект из 4 колес.</p><span class="price">от 2 400 ₽</span></div>
+        <div class="row"><h3>Замена масла</h3><p>Масло и фильтр на выбор: свое или подберем под ваш мотор. Цена — за работу.</p><span class="price">от 1 200 ₽</span></div>
+        <div class="row"><h3>Ремонт двигателя</h3><p>От замены ремня ГРМ до капитального ремонта. Объем работ уточняется при разборе.</p><span class="price">от 25 000 ₽</span></div>
+        <div class="row"><h3>Ремонт коробки передач</h3><p>Механика, автомат, робот, вариатор: диагностика, ремонт, замена масла в КПП.</p><span class="price">от 15 000 ₽</span></div>
+      </div>
+      <p class="note">Цены в этом примере вымышленные, для демонстрации.</p>
+    </div>
+  </section>
+
+  <section id="pochemu">
+    <div class="wrap">
+      <h2>Почему к нам</h2>
+      <p class="sub">Коротко о том, как мы работаем.</p>
+      <div class="why">
+        <div><h3>Мультибренд</h3><p>Работаем с автомобилями разных марок. Не нужно искать отдельный сервис под каждую машину в семье.</p></div>
+        <div><h3>Запись без очередей</h3><p>Вы приезжаете к выбранному времени, и вашей машиной занимаются сразу, без ожидания в зале.</p></div>
+        <div><h3>Старые детали возвращаем</h3><p>Можно посмотреть, что именно заменили, и забрать с собой.</p></div>
+        <div><h3>Гарантия на работы 3 месяца</h3><p>Если после ремонта что-то пошло не так, приезжайте, и мы разберемся.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="otzyvy">
+    <div class="wrap">
+      <h2>Что говорят водители</h2>
+      <p class="sub">Примеры отзывов для демонстрации. Для реального сервиса заменим на настоящие.</p>
+      <div class="reviews">
+        <figure class="review"><blockquote>Приехал к записанному времени, машину взяли сразу. Показали, что нашли при разборе, позвонили до того, как делать лишнее.</blockquote><figcaption>Алексей, Kia Rio</figcaption></figure>
+        <figure class="review"><blockquote>Заменили масло и фильтры, старый фильтр отдали. Приятно, когда не приходится верить на слово.</blockquote><figcaption>Марина, Toyota Camry</figcaption></figure>
+        <figure class="review"><blockquote>Делали диагностику коробки. Объяснили простыми словами, что с ней, и сколько займет ремонт.</blockquote><figcaption>Игорь, Volkswagen Tiguan</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="zapis">
+    <div class="wrap">
+      <div class="box">
+        <h2>Онлайн-запись</h2>
+        <p class="sub">Выберите удобное время, мы перезвоним и подтвердим запись.</p>
+        <form id="form" novalidate>
+          <div class="grid2">
+            <label>Имя<input id="name" autocomplete="name" placeholder="Как к вам обращаться"></label>
+            <label>Телефон<input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00"></label>
+            <label>Автомобиль<input id="car" placeholder="Например, Kia Rio 2018"></label>
+            <label>Услуга
+              <select id="service">
+                <option value="">Выберите услугу</option>
+                <option>Плановое ТО</option>
+                <option>Компьютерная диагностика</option>
+                <option>Шиномонтаж</option>
+                <option>Замена масла</option>
+                <option>Ремонт двигателя</option>
+                <option>Ремонт коробки передач</option>
+              </select>
+            </label>
+            <label>Дата<input id="date" type="date"></label>
+          </div>
+          <fieldset>
+            <legend>Время</legend>
+            <div id="slots" class="slots"></div>
+          </fieldset>
+          <label class="check">
+            <input id="consent" type="checkbox">
+            <span>Согласен на обработку персональных данных (имя и телефон) для записи в сервис</span>
+          </label>
+          <p class="error" id="error" role="alert"></p>
+          <button class="btn" type="submit">Записаться</button>
+        </form>
+        <div id="done" hidden>
+          <h3>Заявка принята</h3>
+          <dl id="summary"></dl>
+          <p class="note">Это демо-версия: данные никуда не отправляются. Реальную отправку подключим вместе с Telegram-ботом.</p>
+          <button class="btn" type="button" id="again">Записать ещё одну машину</button>
+        </div>
+        <p class="note">Или позвоните: <a href="tel:+74950000000">+7 (495) 000-00-00</a></p>
+      </div>
+    </div>
+  </section>
+  <section id="kontakty">
+    <div class="wrap">
+      <h2>Контакты</h2>
+      <div class="contacts">
+        <div class="info">
+          <p><span>Адрес</span>Москва, ул. Примерная, 1</p>
+          <p><span>Часы работы</span>Каждый день с 10:00 до 20:00</p>
+          <p><span>Телефон</span><a href="tel:+74950000000">+7 (495) 000-00-00</a></p>
+        </div>
+        <div class="mapbox">
+          <p>Здесь будет карта с точкой вашего сервиса</p>
+          <a class="btn" href="https://yandex.ru/maps/?text=Москва%2C%20автосервис" target="_blank" rel="noopener">Открыть карту</a>
+        </div>
+      </div>
+      <p class="note">Адрес вымышленный, для демонстрации.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">MTAuto · Москва · Демонстрационный сайт</div>
+</footer>
+
+<script>
+  // Настройки слотов: начало и конец работы в минутах от полуночи, шаг записи
+  const OPEN = 10 * 60, CLOSE = 20 * 60, STEP = 30;
+
+  const $ = id => document.getElementById(id);
+  const pad = n => String(n).padStart(2, '0');
+  const isoDate = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  const timeText = m => pad(Math.floor(m / 60)) + ':' + pad(m % 60);
+
+  // Рисует кнопки времени для выбранной даты. Для сегодняшнего дня прошедшие слоты отключаются.
+  function renderSlots() {
+    const now = new Date();
+    const isToday = $('date').value === isoDate(now);
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    $('slots').innerHTML = '';
+    let free = 0;
+    for (let m = OPEN; m < CLOSE; m += STEP) {
+      const off = isToday && m < nowMin + 30; // записываем не позже чем за 30 минут
+      if (!off) free++;
+      const label = document.createElement('label');
+      label.innerHTML = '<input type="radio" name="time" value="' + timeText(m) + '"' + (off ? ' disabled' : '') + '><span>' + timeText(m) + '</span>';
+      $('slots').appendChild(label);
+    }
+    return free;
+  }
+
+  function initDate() {
+    const today = new Date(), last = new Date();
+    last.setDate(last.getDate() + 30);
+    $('date').min = isoDate(today);
+    $('date').max = isoDate(last);
+    $('date').value = isoDate(today);
+    if (renderSlots() === 0) { // сегодня свободных слотов уже нет — предлагаем завтра
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      $('date').value = isoDate(tomorrow);
+      renderSlots();
+    }
+  }
+  $('date').addEventListener('change', renderSlots);
+
+  // Приводит телефон к виду +7 900 000-00-00. Если цифр не хватает, возвращает null.
+  function cleanPhone(v) {
+    let d = v.replace(/\D/g, '');
+    if (d.length === 11 && (d[0] === '7' || d[0] === '8')) d = d.slice(1);
+    if (d.length !== 10) return null;
+    return '+7 ' + d.slice(0, 3) + ' ' + d.slice(3, 6) + '-' + d.slice(6, 8) + '-' + d.slice(8);
+  }
+
+  function fail(msg, field) {
+    $('error').textContent = msg;
+    if (field) field.focus();
+  }
+
+  $('form').addEventListener('submit', e => {
+    e.preventDefault();
+    const name = $('name').value.trim(), car = $('car').value.trim();
+    const phone = cleanPhone($('phone').value);
+    const time = document.querySelector('input[name="time"]:checked');
+
+    if (name.length < 2) return fail('Напишите, как к вам обращаться.', $('name'));
+    if (!phone) return fail('Проверьте телефон: нужно 10 цифр после +7.', $('phone'));
+    if (car.length < 2) return fail('Укажите марку и модель автомобиля.', $('car'));
+    if (!$('service').value) return fail('Выберите услугу.', $('service'));
+    if (!$('date').value) return fail('Выберите дату.', $('date'));
+    if (!time) return fail('Выберите время.');
+    if (!$('consent').checked) return fail('Без согласия на обработку данных записать вас не получится.', $('consent'));
+
+    $('error').textContent = '';
+    const [y, mo, d] = $('date').value.split('-').map(Number);
+    const dateText = new Date(y, mo - 1, d).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' });
+    const rows = [['Имя', name], ['Телефон', phone], ['Авто', car], ['Услуга', $('service').value], ['Когда', dateText + ', ' + time.value]];
+    $('summary').innerHTML = '';
+    rows.forEach(([k, v]) => {
+      const dt = document.createElement('dt'), dd = document.createElement('dd');
+      dt.textContent = k; dd.textContent = v; // textContent: введённый текст не превращается в код
+      $('summary').append(dt, dd);
+    });
+    $('form').hidden = true;
+    $('done').hidden = false;
+  });
+
+  $('again').addEventListener('click', () => {
+    $('form').reset();
+    initDate();
+    $('done').hidden = true;
+    $('form').hidden = false;
+  });
+
+  initDate();
+</script>
+</body>
+</html>
