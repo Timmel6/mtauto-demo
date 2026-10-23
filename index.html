@@ -288,7 +288,17 @@
       renderSlots();
     }
   }
-  $('date').addEventListener('change', renderSlots);
+  // Браузер на телефоне может пропустить дату вне диапазона, поэтому проверяем сами
+  $('date').addEventListener('change', () => {
+    const v = $('date').value;
+    if (v < $('date').min || v > $('date').max) {
+      $('date').value = $('date').min;
+      $('error').textContent = 'Записаться можно от сегодняшнего дня и на 30 дней вперед.';
+    } else {
+      $('error').textContent = '';
+    }
+    renderSlots();
+  });
 
   // Приводит телефон к виду +7 900 000-00-00. Если цифр не хватает, возвращает null.
   function cleanPhone(v) {
@@ -314,7 +324,11 @@
     if (car.length < 2) return fail('Укажите марку и модель автомобиля.', $('car'));
     if (!$('service').value) return fail('Выберите услугу.', $('service'));
     if (!$('date').value) return fail('Выберите дату.', $('date'));
+    const now = new Date();
+    if ($('date').value < isoDate(now) || $('date').value > $('date').max) return fail('Дата должна быть от сегодняшнего дня и не позже чем через 30 дней.', $('date'));
     if (!time) return fail('Выберите время.');
+    const [th, tm] = time.value.split(':').map(Number);
+    if ($('date').value === isoDate(now) && th * 60 + tm < now.getHours() * 60 + now.getMinutes() + 30) return fail('Это время уже прошло. Выберите другое.');
     if (!$('consent').checked) return fail('Без согласия на обработку данных записать вас не получится.', $('consent'));
 
     $('error').textContent = '';
