@@ -266,12 +266,13 @@
     $('slots').innerHTML = '';
     let free = 0;
     for (let m = OPEN; m < CLOSE; m += STEP) {
-      const off = isToday && m < nowMin + 30; // записываем не позже чем за 30 минут
-      if (!off) free++;
+      if (isToday && m < nowMin + 30) continue; // прошедшие слоты и ближайшие 30 минут не показываем
+      free++;
       const label = document.createElement('label');
-      label.innerHTML = '<input type="radio" name="time" value="' + timeText(m) + '"' + (off ? ' disabled' : '') + '><span>' + timeText(m) + '</span>';
+      label.innerHTML = '<input type="radio" name="time" value="' + timeText(m) + '"><span>' + timeText(m) + '</span>';
       $('slots').appendChild(label);
     }
+    if (free === 0) $('slots').innerHTML = '<p class="note">На сегодня свободных окон нет. Выберите другую дату.</p>';
     return free;
   }
 
